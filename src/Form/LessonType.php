@@ -49,7 +49,7 @@ class LessonType extends AbstractType
                     ])
                 ]
             ])
-            ->add('course', HiddenType::class);
+            ->add('course', HiddenType::class)
         ;
 
         $builder->get('course')
