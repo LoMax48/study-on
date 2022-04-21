@@ -38,6 +38,7 @@ class Course
 
     /**
      * @ORM\OneToMany(targetEntity=Lesson::class, mappedBy="course", cascade={"persist"})
+     * @ORM\OrderBy({"number" = "ASC"})
      */
     private $lessons;
 

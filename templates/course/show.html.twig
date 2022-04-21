@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Course{% endblock %}
+{% block title %}{{ course.name }} / StudyOn {% endblock %}
 
 {% block body %}
     <h1>{{ course.name }}</h1>
     <h3>{{ course.description }}</h3>
     <ul>
-        {% for lesson in course.lessons | sort((a, b) => a.number <=> b.number) %}
+        {% for lesson in course.lessons %}
             <li><a href="{{ path('app_lesson_show', {'id': lesson.id}) }}">{{ lesson.name }}</a></li>
         {% endfor %}
     </ul>
