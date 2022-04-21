@@ -30,12 +30,9 @@ class LessonType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Название',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Поле не может быть пустым.'
-                    ]),
+                    new NotBlank(),
                     new Length([
                         'max' => 255,
-                        'maxMessage' => 'Длина поля не может быть больше 255 символов.'
                     ])
                 ]
             ])
@@ -45,11 +42,8 @@ class LessonType extends AbstractType
             ->add('number', IntegerType::class, [
                 'label' => 'Порядковый номер',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Поле не может быть пустым.'
-                    ]),
+                    new NotBlank(),
                     new Range([
-                        'notInRangeMessage' => 'Значение поля должно быть в пределах от 1 до 10000.',
                         'min' => 1,
                         'max' => 10000
                     ])

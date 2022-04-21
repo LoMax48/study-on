@@ -19,24 +19,18 @@ class CourseType extends AbstractType
             ->add('code', TextType::class, [
                 'label' => 'Буквенный код',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Поле не может быть пустым'
-                    ]),
+                    new NotBlank(),
                     new Length([
                         'max' => 255,
-                        'maxMessage' => 'Длина поля не должна превышать 255.'
                     ])
                 ]
             ])
             ->add('name', TextType::class, [
                 'label' => 'Название',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Поле не может быть пустым'
-                    ]),
+                    new NotBlank(),
                     new Length([
                         'max' => 255,
-                        'maxMessage' => 'Длина поля не должна превышать 255.'
                     ])
                 ]
             ])
@@ -46,7 +40,6 @@ class CourseType extends AbstractType
                 'constraints' => [
                     new Length([
                         'max' => 1000,
-                        'maxMessage' => 'Длина поля не должна превышать 255.'
                     ])
                 ]
             ])
