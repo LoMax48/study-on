@@ -3,28 +3,17 @@
 {% block title %} Курсы / StudyOn {% endblock %}
 
 {% block body %}
-    <h1>Курсы</h1>
+    {% for course in courses %}
+        <div class="container-fluid my-2 mx-10">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-outline-primary my-2">Перейти</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Название</th>
-                <th>Описание</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for course in courses %}
-            <tr>
-                <td><a href="{{ path('app_course_show', {'id': course.id}) }}">{{ course.name }}</a></td>
-                <td>{{ course.description }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_course_new') }}">Добавить новый курс</a>
+    <a href="{{ path('app_course_new') }}" class="btn btn-outline-success my-2 mx-3">Добавить новый курс</a>
 {% endblock %}

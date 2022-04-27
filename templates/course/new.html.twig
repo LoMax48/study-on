@@ -3,9 +3,11 @@
 {% block title %}Новый курс / StudyOn {% endblock %}
 
 {% block body %}
-    <h1>Создание нового курса</h1>
+    <div class="container-fluid">
+        <h1>Создание нового курса</h1>
 
-    {{ include('course/_form.html.twig') }}
+        {{ include('course/_form.html.twig') }}
 
-    <a href="{{ path('app_course_index') }}">back to list</a>
+        <a class="btn btn-outline-danger" href="{{ path('app_course_index') }}">Вернуться к списку</a>
+    </div>
 {% endblock %}

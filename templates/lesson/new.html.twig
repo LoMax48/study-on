@@ -3,9 +3,9 @@
 {% block title %} Новый урок / StudyOn {% endblock %}
 
 {% block body %}
-    <h1>Новый урок</h1>
+    <div class="container-fluid">
+        <h1>Новый урок</h1>
 
-    {{ include('lesson/_form.html.twig') }}
-
-    <a href="{{ path('app_lesson_index') }}">Вернуться к списку</a>
+        {{ include('lesson/_form.html.twig', {'button_label': 'Создать'}) }}
+    </div>
 {% endblock %}

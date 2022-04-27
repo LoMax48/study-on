@@ -3,11 +3,9 @@
 {% block title %}Редактировать курс / StudyOn {% endblock %}
 
 {% block body %}
-    <h1>Edit Course</h1>
+    <div class="container-fluid">
+        <h1>Редактировать курс</h1>
 
-    {{ include('course/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_course_index') }}">back to list</a>
-
-    {{ include('course/_delete_form.html.twig') }}
+        {{ include('course/_form.html.twig', {'button_label': 'Сохранить'}) }}
+    </div>
 {% endblock %}
