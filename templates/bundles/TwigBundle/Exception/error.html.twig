@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container-sm">
-        <h2>Похоже, произошла ошибка :(</h2>
-        <h3>{{ status_code }} {{ status_text }}</h3>
+    <div class="container d-flex justify-content-center my-3">
+        <div class="text-center">
+            <h2>Похоже, произошла ошибка :(</h2>
+            <h3>{{ status_code }} {{ status_text }}</h3>
 
-        <a class="btn btn-outline-primary my-2" href="{{ path('app_course_index') }}">Вернуться на главную</a>
+            <a class="btn btn-outline-primary my-2" href="{{ path('app_course_index') }}">Вернуться на главную</a>
+        </div>
     </div>
 {% endblock %}
