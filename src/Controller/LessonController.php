@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Form\LessonType;
 use App\Repository\LessonRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ class LessonController extends AbstractController
 {
     /**
      * @Route("/{course}/new", name="app_lesson_new", methods={"GET", "POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function new(Request $request, LessonRepository $lessonRepository, Course $course): Response
     {
@@ -40,6 +42,7 @@ class LessonController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_lesson_show", methods={"GET"})
+     * @IsGranted("ROLE_USER")
      */
     public function show(Lesson $lesson): Response
     {
@@ -50,6 +53,7 @@ class LessonController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="app_lesson_edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function edit(Request $request, Lesson $lesson, LessonRepository $lessonRepository): Response
     {
@@ -74,6 +78,7 @@ class LessonController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_lesson_delete", methods={"POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function delete(Request $request, Lesson $lesson, LessonRepository $lessonRepository): Response
     {

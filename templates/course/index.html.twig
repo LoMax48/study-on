@@ -15,5 +15,7 @@
         </div>
     {% endfor %}
 
-    <a href="{{ path('app_course_new') }}" class="btn btn-outline-success my-2 mx-3">Добавить новый курс</a>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <a href="{{ path('app_course_new') }}" class="btn btn-outline-success my-2 mx-3">Добавить новый курс</a>
+    {% endif %}
 {% endblock %}
