@@ -35,6 +35,9 @@ class RegistrationType extends AbstractType
                 'invalid_message' => 'Пароли должны совпадать',
                 'required' => false,
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Введите пароль',
+                    ]),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Ваш пароль менее {{ limit }} символов',

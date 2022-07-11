@@ -28,6 +28,56 @@ class LessonTest extends AbstractTest
         ];
     }
 
+    public function testLessonPagesUnauthorizedAccess(): void
+    {
+        $client = self::getClient();
+
+        $courseRepository = self::getEntityManager()->getRepository(Course::class);
+        $courses = $courseRepository->findAll();
+
+        foreach ($courses as $course) {
+            foreach ($course->getLessons() as $lesson) {
+                $client->request('GET', $this->lessonsIndexPath . $lesson->getId());
+                $this->assertResponseRedirect();
+                $crawler = $client->followRedirect();
+                $this->assertEquals('/login', $client->getRequest()->getPathInfo());
+
+                $client->request('GET', $this->lessonsIndexPath . $lesson->getId() . '/edit');
+                $this->assertResponseRedirect();
+                $crawler = $client->followRedirect();
+                $this->assertEquals('/login', $client->getRequest()->getPathInfo());
+
+                $client->request('POST', $this->lessonsIndexPath . $lesson->getId() . '/edit');
+                $this->assertResponseRedirect();
+                $crawler = $client->followRedirect();
+                $this->assertEquals('/login', $client->getRequest()->getPathInfo());
+            }
+        }
+    }
+
+    public function testLessonPagesUserAccess(): void
+    {
+        $crawler = $this->userAuth();
+
+        $client = self::getClient();
+
+        $courseRepository = self::getEntityManager()->getRepository(Course::class);
+        $courses = $courseRepository->findAll();
+
+        foreach ($courses as $course) {
+            foreach ($course->getLessons() as $lesson) {
+                $client->request('GET', $this->lessonsIndexPath . $lesson->getId());
+                $this->assertResponseOk();
+
+                $client->request('GET', $this->lessonsIndexPath . $lesson->getId() . '/edit');
+                self::assertResponseStatusCodeSame(403);
+
+                $client->request('POST', $this->lessonsIndexPath . $lesson->getId() . '/edit');
+                self::assertResponseStatusCodeSame(403);
+            }
+        }
+    }
+
     public function testLessonPagesResponseIsSuccessful(): void
     {
         $crawler = $this->adminAuth();
@@ -36,6 +86,7 @@ class LessonTest extends AbstractTest
 
         $courseRepository = self::getEntityManager()->getRepository(Course::class);
         $courses = $courseRepository->findAll();
+
         foreach ($courses as $course) {
             foreach ($course->getLessons() as $lesson) {
                 $client->request('GET', $this->lessonsIndexPath . $lesson->getId());
