@@ -6,8 +6,8 @@ use App\Dto\UserDto;
 use App\Exception\BillingUnavailableException;
 use App\Exception\ClientException;
 use App\Security\User;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class BillingClient
 {

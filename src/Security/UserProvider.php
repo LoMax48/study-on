@@ -20,7 +20,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      *
      * @throws UserNotFoundException if the user is not found
      */
-    public function loadUserByIdentifier($identifier)
+    public function loadUserByIdentifier($identifier): UserInterface
     {
         $user = new User();
         $user->setEmail($identifier);

@@ -1,13 +1,24 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
 use App\Entity\Course;
+use App\Tests\AbstractTest;
+use App\Tests\Authorization\Auth;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 class CourseTest extends AbstractTest
 {
-    private $indexPath = '/courses/';
+    private string $indexPath = '/courses/';
+    private SerializerInterface $serializer;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->serializer = self::getContainer()->get(SerializerInterface::class);
+    }
 
     protected function getFixtures(): array
     {
@@ -32,11 +43,61 @@ class CourseTest extends AbstractTest
     /**
      * @dataProvider urlProviderSuccessful
      */
-    public function testMainPagesGetResponse($url): void
+    public function testMainPagesAdminAccess($url): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
         $client->request('GET', $url);
         $this->assertResponseOk();
+
+        $entityManager = self::getEntityManager();
+        $courses = $entityManager->getRepository(Course::class)->findAll();
+        $this->assertNotEmpty($courses);
+
+        foreach ($courses as $course) {
+            self::getClient()->request('GET', $this->indexPath . $course->getId());
+            $this->assertResponseOk();
+
+            self::getClient()->request('GET', $this->indexPath . $course->getId() . '/edit');
+            $this->assertResponseOk();
+
+            self::getClient()->request('POST', $this->indexPath . 'new');
+            $this->assertResponseOk();
+
+            self::getClient()->request('POST', $this->indexPath . $course->getId() . '/edit');
+            $this->assertResponseOk();
+        }
+
+        $client = self::getClient();
+        $url = $this->indexPath . '57';
+        $client->request('GET', $url);
+        $this->assertResponseNotFound();
+    }
+
+    /**
+     * @dataProvider urlProviderSuccessful
+     */
+    public function testMainPagesUserAccess($url): void
+    {
+        $crawler = $this->userAuth();
+
+        $client = self::getClient();
+
+        $em = self::getEntityManager();
+        $courses = $em->getRepository(Course::class)->findAll();
+        self::assertNotEmpty($courses);
+
+        foreach ($courses as $course) {
+            self::getClient()->request('GET', $this->indexPath . $course->getId() . '/edit');
+            self::assertResponseStatusCodeSame(403);
+
+            self::getClient()->request('POST', $this->indexPath . 'new');
+            self::assertResponseStatusCodeSame(403);
+
+            self::getClient()->request('POST', $this->indexPath . $course->getId() . '/edit');
+            self::assertResponseStatusCodeSame(403);
+        }
     }
 
     /**
@@ -63,25 +124,6 @@ class CourseTest extends AbstractTest
         self::assertCount($actualCoursesCount, $crawler->filter('.card'));
     }
 
-    public function testPostResponse(): void
-    {
-        $client = self::getClient();
-
-        $client->request('POST', $this->indexPath . 'new');
-        $this->assertResponseOk();
-
-        $courseRepository = self::getEntityManager()->getRepository(Course::class);
-        $courses = $courseRepository->findAll();
-
-        foreach ($courses as $course) {
-            $client->request('POST', $this->indexPath . $course->getId() . '/edit');
-            $this->assertResponseOk();
-
-            $client->request('POST', '/lessons/' . $course->getId() . '/new');
-            $this->assertResponseOk();
-        }
-    }
-
     public function testLessonsCount(): void
     {
         $client = self::getClient();
@@ -101,6 +143,8 @@ class CourseTest extends AbstractTest
 
     public function testValidDataCourseAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->indexPath);
@@ -132,6 +176,8 @@ class CourseTest extends AbstractTest
 
     public function testBlankDataCourseAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->indexPath);
@@ -173,6 +219,8 @@ class CourseTest extends AbstractTest
 
     public function testInvalidLengthDataCourseAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->indexPath);
@@ -257,6 +305,8 @@ class CourseTest extends AbstractTest
 
     public function testCourseDelete(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->indexPath);
@@ -281,6 +331,8 @@ class CourseTest extends AbstractTest
 
     public function testCourseEdit(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->indexPath);
@@ -314,5 +366,35 @@ class CourseTest extends AbstractTest
 
         $courseDescription = $crawler->filter('h4')->text();
         self::assertEquals('Описание курса', $courseDescription);
+    }
+
+    private function adminAuth(): Crawler
+    {
+        $auth = new Auth();
+        $auth->setSerializer($this->serializer);
+
+        $data = [
+            'username' => 'admin@mail.ru',
+            'password' => 'admin123'
+        ];
+
+        $requestData = $this->serializer->serialize($data, 'json');
+
+        return $auth->auth($requestData);
+    }
+
+    private function userAuth(): Crawler
+    {
+        $auth = new Auth();
+        $auth->setSerializer($this->serializer);
+
+        $data = [
+            'username' => 'user@mail.ru',
+            'password' => 'user123'
+        ];
+
+        $requestData = $this->serializer->serialize($data, 'json');
+
+        return $auth->auth($requestData);
     }
 }

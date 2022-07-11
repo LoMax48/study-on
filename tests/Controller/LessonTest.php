@@ -1,14 +1,25 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
 use App\Entity\Course;
+use App\Tests\AbstractTest;
+use App\Tests\Authorization\Auth;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 class LessonTest extends AbstractTest
 {
-    private $coursesIndexPath = '/courses/';
-    private $lessonsIndexPath = '/lessons/';
+    private string $coursesIndexPath = '/courses/';
+    private string $lessonsIndexPath = '/lessons/';
+    private SerializerInterface $serializer;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->serializer = self::getContainer()->get(SerializerInterface::class);
+    }
 
     protected function getFixtures(): array
     {
@@ -19,6 +30,8 @@ class LessonTest extends AbstractTest
 
     public function testLessonPagesResponseIsSuccessful(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $courseRepository = self::getEntityManager()->getRepository(Course::class);
@@ -39,6 +52,8 @@ class LessonTest extends AbstractTest
 
     public function testValidDataLessonAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->coursesIndexPath);
@@ -74,6 +89,8 @@ class LessonTest extends AbstractTest
 
     public function testInvalidDataLessonAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->coursesIndexPath);
@@ -119,6 +136,8 @@ class LessonTest extends AbstractTest
 
     public function testBlankDataLessonAdd(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->coursesIndexPath);
@@ -165,6 +184,8 @@ class LessonTest extends AbstractTest
 
     public function testLessonsDelete(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->coursesIndexPath);
@@ -190,6 +211,8 @@ class LessonTest extends AbstractTest
 
     public function testLessonsEdit(): void
     {
+        $crawler = $this->adminAuth();
+
         $client = self::getClient();
 
         $crawler = $client->request('GET', $this->coursesIndexPath);
@@ -234,5 +257,35 @@ class LessonTest extends AbstractTest
 
         $courseDescription = $crawler->filter('h5')->text();
         self::assertEquals('Контент урока', $courseDescription);
+    }
+
+    private function adminAuth(): Crawler
+    {
+        $auth = new Auth();
+        $auth->setSerializer($this->serializer);
+
+        $data = [
+            'username' => 'admin@mail.ru',
+            'password' => 'admin123'
+        ];
+
+        $requestData = $this->serializer->serialize($data, 'json');
+
+        return $auth->auth($requestData);
+    }
+
+    private function userAuth(): Crawler
+    {
+        $auth = new Auth();
+        $auth->setSerializer($this->serializer);
+
+        $data = [
+            'username' => 'user@mail.ru',
+            'password' => 'user123'
+        ];
+
+        $requestData = $this->serializer->serialize($data, 'json');
+
+        return $auth->auth($requestData);
     }
 }

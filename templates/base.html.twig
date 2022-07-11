@@ -23,11 +23,11 @@
         </a>
         <div class="d-flex flex-row align-items-center">
             {% if is_granted('ROLE_USER') %}
-                <a href="{{ path('app_profile') }}" class="btn btn-outline-success me-2">Профиль</a>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline-danger me-2">Выйти</a>
+                <a href="{{ path('app_profile') }}" class="btn btn-success me-2">Профиль</a>
+                <a href="{{ path('app_logout') }}" class="btn btn-danger me-2">Выйти</a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-outline-success me-2">Вход</a>
-                <a href="{{ path('app_register') }}" class="btn btn-outline-secondary me-2">Регистрация</a>
+                <a href="{{ path('app_login') }}" class="btn btn-success me-2">Вход</a>
+                <a href="{{ path('app_register') }}" class="btn btn-secondary me-2">Регистрация</a>
             {% endif %}
         </div>
     </div>
