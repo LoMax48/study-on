@@ -19,7 +19,7 @@ class LessonController extends AbstractController
 {
     /**
      * @Route("/{course}/new", name="app_lesson_new", methods={"GET", "POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=403, message="Доступ только для администратора.")
      */
     public function new(Request $request, LessonRepository $lessonRepository, Course $course): Response
     {
@@ -53,7 +53,7 @@ class LessonController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="app_lesson_edit", methods={"GET", "POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=403, message="Доступ только для администратора.")
      */
     public function edit(Request $request, Lesson $lesson, LessonRepository $lessonRepository): Response
     {
@@ -78,7 +78,7 @@ class LessonController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_lesson_delete", methods={"POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_SUPER_ADMIN", statusCode=403, message="Доступ только для администратора.")
      */
     public function delete(Request $request, Lesson $lesson, LessonRepository $lessonRepository): Response
     {

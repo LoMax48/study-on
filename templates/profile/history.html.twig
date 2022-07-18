@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}История/StudyOn{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mt-2">Моя история</h1>
+    <div class="row justify-content-center mt-5">
+        <div class="align-items-center">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Код курса</th>
+                    <th scope="col">Дата окончания</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ transaction.operationTime }}</td>
+                            <td>{{ transaction.type }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.courseCode }}</td>
+                            <td>{{ transaction.expiresTime }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

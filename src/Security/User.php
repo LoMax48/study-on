@@ -14,6 +14,8 @@ class User implements UserInterface
 
     private $apiToken;
 
+    private $refreshToken;
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -105,6 +107,18 @@ class User implements UserInterface
     public function setApiToken(string $apiToken): self
     {
         $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
+    public function getRefreshToken(): string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(string $refreshToken): self
+    {
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }

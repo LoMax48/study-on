@@ -35,4 +35,10 @@ class UserDto
      * @Serializer\Type("string")
      */
     public string $token;
+
+    /**
+     * @var string
+     * @Serializer\Type("string")
+     */
+    public string $refreshToken;
 }

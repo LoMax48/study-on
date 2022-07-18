@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Course;
 use App\Entity\Lesson;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -19,6 +20,16 @@ class LessonRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Lesson::class);
+    }
+
+    public function findByCourse(Course $course)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.course = :course')
+            ->setParameter('course', $course)
+            ->orderBy('l.number', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

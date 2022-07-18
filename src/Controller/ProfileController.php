@@ -46,4 +46,20 @@ class ProfileController extends AbstractController
             'userDto' => $userDto,
         ]);
     }
+
+    /**
+     * @Route("/history", name="app_profile_history")
+     */
+    public function history(): Response
+    {
+        try {
+            $transactionsDto = $this->billingClient->transactionHistory($this->getUser());
+        } catch (BillingUnavailableException $exception) {
+            throw new \Exception($exception->getMessage());
+        }
+
+        return $this->render('profile/history.html.twig', [
+            'transactions' => $transactionsDto,
+        ]);
+    }
 }
