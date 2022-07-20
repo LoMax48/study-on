@@ -6,7 +6,7 @@
     {% for message in app.flashes('success') %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -107,7 +107,8 @@
                                             Закрыть
                                         </button>
                                         <a href="{{ path('app_course_pay', {'course_code': course.code}) }}"
-                                           class="btn btn-primary">
+                                           class="btn btn-primary"
+                                        >
                                             Подтвердить
                                         </a>
                                     </div>

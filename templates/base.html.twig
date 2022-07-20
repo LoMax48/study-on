@@ -23,6 +23,7 @@
         </a>
         <div class="d-flex flex-row align-items-center">
             {% if is_granted('ROLE_USER') %}
+                <a href="{{ path('app_profile_history') }}" class="btn btn-primary me-2">История транзакций</a>
                 <a href="{{ path('app_profile') }}" class="btn btn-success me-2">Профиль</a>
                 <a href="{{ path('app_logout') }}" class="btn btn-danger me-2">Выйти</a>
             {% else %}

@@ -20,7 +20,7 @@ class PayDto
 
     /**
      * @Serializer\Type("string")
-     * @var string
+     * @var ?string
      */
-    public string $expiresTime;
+    public ?string $expiresTime = null;
 }

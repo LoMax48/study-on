@@ -20,9 +20,9 @@ class TransactionDto
 
     /**
      * @Serializer\Type("string")
-     * @var string
+     * @var ?string
      */
-    public string $course;
+    public ?string $course = null;
 
     /**
      * @Serializer\Type("float")
@@ -38,7 +38,7 @@ class TransactionDto
 
     /**
      * @Serializer\Type("string")
-     * @var string
+     * @var ?string
      */
-    public string $expiresTime;
+    public ?string $expiresTime = null;
 }

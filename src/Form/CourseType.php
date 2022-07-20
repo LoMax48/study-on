@@ -44,7 +44,7 @@ class CourseType extends AbstractType
                 'choices' => [
                     'Аренда' => 'rent',
                     'Бесплатный' => 'free',
-                    'Покупка' => 'free',
+                    'Покупка' => 'buy',
                 ],
             ])
             ->add('price', NumberType::class, [
@@ -66,6 +66,7 @@ class CourseType extends AbstractType
                 'constraints' => [
                     new Length([
                         'max' => 1000,
+                        'maxMessage' => 'Описание превышает {{ limit }} символов.',
                     ])
                 ]
             ])

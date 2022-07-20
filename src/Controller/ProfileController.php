@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\UserDto;
 use App\Exception\BillingUnavailableException;
+use App\Repository\CourseRepository;
 use App\Service\BillingClient;
 use App\Service\DecodingJwt;
 use JMS\Serializer\SerializerInterface;
@@ -50,16 +51,33 @@ class ProfileController extends AbstractController
     /**
      * @Route("/history", name="app_profile_history")
      */
-    public function history(): Response
+    public function history(CourseRepository $courseRepository): Response
     {
         try {
             $transactionsDto = $this->billingClient->transactionHistory($this->getUser());
+
+            $courses = $courseRepository->findAll();
+
+            $coursesData = [];
+            foreach ($transactionsDto as $transactionDto) {
+                foreach ($courses as $course) {
+                    if ($transactionDto && $transactionDto->course === $course->getCode()) {
+                        $coursesData[$transactionDto->course] = [
+                            'id' => $course->getId(),
+                            'name' => $course->getName(),
+                        ];
+                    }
+                }
+            }
         } catch (BillingUnavailableException $exception) {
+            throw new \Exception($exception->getMessage());
+        } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
         }
 
         return $this->render('profile/history.html.twig', [
             'transactions' => $transactionsDto,
+            'courses' => $coursesData,
         ]);
     }
 }

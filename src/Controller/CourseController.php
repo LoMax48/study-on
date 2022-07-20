@@ -51,6 +51,7 @@ class CourseController extends AbstractController
                 $this->getUser(),
                 'type=payment&skip_expired=true'
             );
+
             $coursesInfoBilling = [];
             foreach ($coursesDto as $courseDto) {
                 foreach ($transactionsDto as $transactionDto) {
@@ -69,6 +70,7 @@ class CourseController extends AbstractController
                     ];
                 }
             }
+
             $response = $billingClient->getCurrentUser($this->getUser(), $decodingJwt);
             $data = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
             $balance = $data['balance'];
@@ -169,7 +171,7 @@ class CourseController extends AbstractController
                 ]);
             }
 
-            if ($this->getUser()) {
+            if (!$this->getUser()) {
                 throw new AccessDeniedException('Требуется авторизация.');
             }
 

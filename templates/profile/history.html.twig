@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}История/StudyOn{% endblock %}
+{% block title %}История транзакций / StudyOn{% endblock %}
 
 {% block body %}
     <h1 class="text-center mt-2">Моя история</h1>
@@ -22,9 +22,14 @@
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
                             <td>{{ transaction.operationTime }}</td>
-                            <td>{{ transaction.type }}</td>
+                            <td>
+                                {% if transaction.type == 'payment' %}
+                                    Платёж
+                                {% elseif transaction.type == 'deposit' %}
+                                    Пополнение
+                                {% endif %}
                             <td>{{ transaction.amount }}</td>
-                            <td>{{ transaction.courseCode }}</td>
+                            <td>{{ transaction.course }}</td>
                             <td>{{ transaction.expiresTime }}</td>
                         </tr>
                     {% endfor %}
