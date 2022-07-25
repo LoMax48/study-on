@@ -6,7 +6,6 @@ use App\Tests\AbstractTest;
 use App\Tests\Authorization\Auth;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpFoundation\Response;
 
 class SecurityTest extends AbstractTest
 {

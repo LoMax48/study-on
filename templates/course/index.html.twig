@@ -18,7 +18,10 @@
                     <h5 class="card-title">{{ course.name }}</h5>
                     <p class="card-text">{{ course.description }}</p>
                     {% if is_granted('ROLE_SUPER_ADMIN') %}
-                        <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-outline-primary">
+                        <a
+                                href="{{ path('app_course_show', {'id': course.id}) }}"
+                                class="btn btn-outline-primary course-show"
+                        >
                             Перейти
                         </a>
                     {% elseif coursesInfoBilling[course.code].course.type == 'free' %}

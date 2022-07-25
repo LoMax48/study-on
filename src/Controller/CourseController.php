@@ -33,6 +33,7 @@ class CourseController extends AbstractController
         try {
             $coursesDto = $billingClient->getAllCourses();
             $coursesInfoBilling = [];
+
             foreach ($coursesDto as $courseDto) {
                 $coursesInfoBilling[$courseDto->code] = [
                     'course' => $courseDto,

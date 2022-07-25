@@ -14,8 +14,8 @@ use Symfony\Component\HttpClient\CurlHttpClient;
 class BillingClient
 {
     private string $startUri;
-    private DecodingJwt $decodingJwt;
-    private SerializerInterface $serializer;
+    protected DecodingJwt $decodingJwt;
+    protected SerializerInterface $serializer;
 
     public function __construct(DecodingJwt $decodingJwt, SerializerInterface $serializer)
     {

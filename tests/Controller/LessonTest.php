@@ -8,6 +8,7 @@ use App\Tests\AbstractTest;
 use App\Tests\Authorization\Auth;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
 
 class LessonTest extends AbstractTest
 {
@@ -43,14 +44,10 @@ class LessonTest extends AbstractTest
                 $this->assertEquals('/login', $client->getRequest()->getPathInfo());
 
                 $client->request('GET', $this->lessonsIndexPath . $lesson->getId() . '/edit');
-                $this->assertResponseRedirect();
-                $crawler = $client->followRedirect();
-                $this->assertEquals('/login', $client->getRequest()->getPathInfo());
+                $this->assertResponseCode(Response::HTTP_FORBIDDEN);
 
                 $client->request('POST', $this->lessonsIndexPath . $lesson->getId() . '/edit');
-                $this->assertResponseRedirect();
-                $crawler = $client->followRedirect();
-                $this->assertEquals('/login', $client->getRequest()->getPathInfo());
+                $this->assertResponseCode(Response::HTTP_FORBIDDEN);
             }
         }
     }
@@ -135,6 +132,7 @@ class LessonTest extends AbstractTest
 
         $lessonLink = $crawler->filter('.list-group-item > a')->last()->link();
         $client->click($lessonLink);
+
         $this->assertResponseOk();
     }
 

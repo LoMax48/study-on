@@ -4,8 +4,11 @@ namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
 use App\Entity\Course;
+use App\Service\BillingClient;
+use App\Service\DecodingJwt;
 use App\Tests\AbstractTest;
 use App\Tests\Authorization\Auth;
+use App\Tests\Mock\BillingClientMock;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -22,9 +25,7 @@ class CourseTest extends AbstractTest
 
     protected function getFixtures(): array
     {
-        return [
-            AppFixtures::class
-        ];
+        return [AppFixtures::class];
     }
 
     public function urlProviderSuccessful()
@@ -40,13 +41,22 @@ class CourseTest extends AbstractTest
         yield [$this->indexPath . '/30'];
     }
 
+    private function getBillingClient(): void
+    {
+        self::getClient()->disableReboot();
+
+        self::getClient()->getContainer()->set(
+            BillingClient::class,
+            new BillingClientMock(new DecodingJwt(), $this->serializer)
+        );
+    }
+
     /**
      * @dataProvider urlProviderSuccessful
      */
     public function testMainPagesAdminAccess($url): void
     {
         $crawler = $this->adminAuth();
-
         $client = self::getClient();
         $client->request('GET', $url);
         $this->assertResponseOk();
@@ -70,7 +80,7 @@ class CourseTest extends AbstractTest
         }
 
         $client = self::getClient();
-        $url = $this->indexPath . '57';
+        $url = $this->indexPath . '228';
         $client->request('GET', $url);
         $this->assertResponseNotFound();
     }
@@ -126,6 +136,7 @@ class CourseTest extends AbstractTest
 
     public function testLessonsCount(): void
     {
+        $crawler = $this->adminAuth();
         $client = self::getClient();
 
         $courseRepository = self::getEntityManager()->getRepository(Course::class);
@@ -159,6 +170,8 @@ class CourseTest extends AbstractTest
         $form = $submitButton->form([
            'course[code]' => 'NEW',
            'course[name]' => 'Новый курс',
+           'course[type]' => 'rent',
+           'course[price]' => 100,
            'course[description]' => 'Описание курса',
         ]);
 
@@ -192,6 +205,8 @@ class CourseTest extends AbstractTest
         $form = $submitButton->form([
             'course[code]' => '',
             'course[name]' => 'Новый курс',
+            'course[type]' => 'rent',
+            'course[price]' => 100,
             'course[description]' => 'Описание курса',
         ]);
 
@@ -199,8 +214,10 @@ class CourseTest extends AbstractTest
         self::assertFalse($client->getResponse()->isRedirect($this->indexPath));
 
         $form = $submitButton->form([
-            'course[code]' => 'NEW',
+            'course[code]' => 'BLANK',
             'course[name]' => '',
+            'course[type]' => 'rent',
+            'course[price]' => 100,
             'course[description]' => 'Описание курса',
         ]);
 
@@ -208,8 +225,10 @@ class CourseTest extends AbstractTest
         self::assertFalse($client->getResponse()->isRedirect($this->indexPath));
 
         $form = $submitButton->form([
-            'course[code]' => 'NEW',
+            'course[code]' => 'BLANK',
             'course[name]' => 'Новый курс',
+            'course[type]' => 'rent',
+            'course[price]' => 100,
             'course[description]' => '',
         ]);
 
@@ -300,7 +319,7 @@ class CourseTest extends AbstractTest
 
         $crawler = $client->submit($form);
         $error = $crawler->filter('.form-error-message');
-        self::assertEquals('Значение слишком длинное. Должно быть равно 1000 символам или меньше.', $error->text());
+        self::assertEquals('Описание превышает 1000 символов.', $error->text());
     }
 
     public function testCourseDelete(): void
@@ -390,7 +409,7 @@ class CourseTest extends AbstractTest
 
         $data = [
             'username' => 'user@mail.ru',
-            'password' => 'user123'
+            'password' => 'user123',
         ];
 
         $requestData = $this->serializer->serialize($data, 'json');
